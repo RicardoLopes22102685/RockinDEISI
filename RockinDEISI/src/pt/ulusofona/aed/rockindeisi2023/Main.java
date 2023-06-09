@@ -5,7 +5,10 @@ import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
     static ArrayList<Song> songs = new ArrayList<>();
@@ -13,7 +16,7 @@ public class Main {
     static ArrayList<Statistics> array_statistics = new ArrayList<>();
     static HashMap<String, Song> songs_Map = new HashMap<>();
     static HashMap<String, Song> song_details_Map = new HashMap<>();
-    static HashMap<String, Song> artists_Map = new HashMap<>();
+    static HashMap<String, Artist> artists_Map = new HashMap<>();
 
     public enum TipoEntidade {
         TEMA, ARTISTA, INPUT_INVALIDO
@@ -24,11 +27,11 @@ public class Main {
             case TEMA -> {
                 return songs;
             }
-            case INPUT_INVALIDO -> {
-                return array_statistics;
+            case ARTISTA -> {
+                return artists;
             }
             default -> {
-                return new ArrayList<>();
+                return array_statistics;
             }
         }
     }
@@ -42,6 +45,7 @@ public class Main {
         songs_Map.clear();
         song_details_Map.clear();
         artists_Map.clear();
+        String artists = null;
         //Leitura ficheiro songs.txt
         File songs_File = new File(folder, "songs.txt");
         Scanner scanner;
@@ -79,28 +83,7 @@ public class Main {
             songs.add(song);
         }
         array_statistics.add(0, new Statistics("songs.txt", linhas_ok, linhas_nok, primeira_linha_nok));
-
-        /*
-        //Leitura ficheiro song_artists.txt
-        File song_artists_File = new File(folder, "song_artists.txt");
-        try {
-            scanner = new Scanner(song_artists_File);
-        } catch (FileNotFoundException e) {
-            return false;
-        }
-        line_count = 0;
-        array_statistics[1].nome_ficheiro = "artists.txt";
-        while (scanner.hasNext()) { //TODO alterar para array artists
-            String linha = scanner.nextLine();
-            String[] song_elements = linha.split("@");
-            String song_ID = song_elements[0];
-            String song_name = song_elements[1];
-            int song_year = Integer.parseInt(song_elements[2]);
-
-            Song song = new Song(song_ID, song_name, song_year);
-            songs.add(song);
-        }
-*/
+        //Leitura song_details.txt
         File song_details_File = new File(folder, "song_details.txt");
         try {
             scanner = new Scanner(song_details_File);
@@ -175,16 +158,90 @@ public class Main {
             song_to_modify.vivacity = details_to_add.vivacity;
             song_to_modify.mean_volume = details_to_add.mean_volume;
         }
+
+        //Leitura ficheiro song_artists.txt
+        File song_artists_File = new File(folder, "song_artists.txt");
+        try {
+            scanner = new Scanner(song_artists_File);
+        } catch (FileNotFoundException e) {
+            return false;
+        }
+        linhas_ok = linhas_nok = line_count = 0;
+        primeira_linha_nok = -1;
+        while (scanner.hasNext()) {
+            line_count++;
+            String linha = scanner.nextLine();
+            String[] song_elements = linha.split("@");
+            if (song_elements.length != 2){
+                if (primeira_linha_nok == -1){
+                    primeira_linha_nok = line_count;
+                }
+                linhas_nok++;
+                continue;
+            }
+            String song_ID = song_elements[0];
+            artists = song_elements[1];
+            artists = Functions.process_Artists(artists);
+            //TODO Criar separação entre artistas com @@@
+            if (!songs_Map.containsKey(song_ID)) {
+                if (primeira_linha_nok == -1) {
+                    primeira_linha_nok = line_count;
+                }
+                linhas_nok++;
+                continue;
+            }
+
+            linhas_ok ++;
+        }
+        array_statistics.add(2, new Statistics("song_artists.txt", linhas_ok,linhas_nok,primeira_linha_nok));
+
         return true;
     }
 
     public static void main(String[] args) {
         long tempo1 = System.currentTimeMillis();
         loadFiles(new File("."));
-        //getObjects(TipoEntidade.INPUT_INVALIDO);
-        for (Statistics objeto : array_statistics){
+        //System.out.println(getObjects(TipoEntidade.TEMA).toString());
+        /*for (Statistics objeto : array_statistics){
             System.out.println(objeto);
+        }*/
+        //String s = "['Bronco']";
+        //String artist = s.replace("['", "").replace("']","");
+        //System.out.println(artist);
+        String s = "\"['The Chenille, Sisters', \"\"James Dapogny's Chicago Jazz Band\"\"]\"";
+        String s2 = "\"['Vanessa Bell Armstrong, Patti Austin, Bernie K.']\"";
+        String s3 = "\"['Johnny Pacheco', 'Pete \"\"El Conde\"\" Rodriguez']\"";
+       // String trimmed = s.substring(1, s.length() - 1);
+        //String[] names = trimmed.split("', \"");
+        Pattern pattern = Pattern.compile("'(.*?)'|\"\"(.*?)\"\"");
+        Matcher matcher = pattern.matcher(s3);
+        /* Patter "monta" o padrão a pocurar com a sintaxe limitador(.*?)limitador
+        Ou seja, tudo o que está dentro dos limitadores irá ser procurado
+        Matcher faz a procura na string do padrão definido no Pattern
+        Matcher group são os grupos de cada tipo de padrão procurado,
+        group(1) pertence ao primeiro padrão e assim por diante
+         */
+        List<String> names = new ArrayList<>();
+        while (matcher.find()) {
+            if (matcher.group(1) != null) {
+                // Single quotes case
+                String name = matcher.group(1);
+                names.add(name);
+            } else if (matcher.group(2) != null) {
+                // Double quotes case
+                String name = matcher.group(2);
+                names.add(name);
+            }
         }
+        for (String name : names) {
+            System.out.println(name);
+        }
+       /* String name1 = names[0].substring(1);
+        String name2 = names[1].substring(1, names[1].length() - 2);
+        System.out.println(name1);
+        System.out.println(name2);*/
+
+
         System.out.println(System.currentTimeMillis() - tempo1);
 
     }
