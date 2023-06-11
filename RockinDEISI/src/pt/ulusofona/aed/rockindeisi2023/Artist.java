@@ -8,7 +8,7 @@ public class Artist {
     public Artist(String song_ID, String nome_artista, int numMusicas) {
         this.song_ID = song_ID;
         this.nome_artista = nome_artista;
-        num_Musicas = numMusicas;
+        this.num_Musicas = numMusicas;
     }
 
     @Override
