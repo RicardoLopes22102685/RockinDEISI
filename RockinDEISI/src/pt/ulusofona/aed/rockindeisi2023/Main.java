@@ -86,7 +86,6 @@ public class Main {
         } catch (FileNotFoundException e) {
             return false;
         }
-        //Leitura ficheiro song_details.txt
         linhas_ok = linhas_nok = line_count = 0;
         primeira_linha_nok = -1;
         while (scanner.hasNext()) {
@@ -168,8 +167,8 @@ public class Main {
             line_count++;
             String linha = scanner.nextLine();
             String[] song_elements = linha.split("@");
-            if (song_elements.length != 2){
-                if (primeira_linha_nok == -1){
+            if (song_elements.length != 2) {
+                if (primeira_linha_nok == -1) {
                     primeira_linha_nok = line_count;
                 }
                 linhas_nok++;
@@ -186,30 +185,42 @@ public class Main {
                 continue;
             }
 
-            //TODO
+            //TODO Adicionar Artists em ArrayList através da separação da QueryArtists
+            //TODO Adicionar Artists ao HashMap
+            //TODO Alterar NumArtists em cada song com base em ID
             /*Artist artist = new Artist(song_ID, artists, )
             songs_Map.put(song_ID, song);
             songs.add(song);*/
 
-            linhas_ok ++;
+            linhas_ok++;
         }
-        int num_artistas =  Functions.process_Artists(artists).size();
-        array_statistics.add(2, new Statistics("song_artists.txt", linhas_ok,linhas_nok,primeira_linha_nok));
+        //int num_artistas =  Functions.process_Artists(artists).size();
+        array_statistics.add(2, new Statistics("song_artists.txt", linhas_ok, linhas_nok, primeira_linha_nok));
 
         return true;
     }
 
     public static void main(String[] args) {
-        long tempo1 = System.currentTimeMillis();
-        loadFiles(new File("."));
+        if (!loadFiles(new File("."))) {
+            return;
+        }
+        Scanner input = new Scanner((System.in));
+        String line = input.nextLine();
+        while (!line.equals("EXIT")) {
+            QueryResult executed = Functions.execute(line);
+            if (executed == null) {
+                System.out.println("Illegal command. Try again");
+            } else {
+                System.out.println(executed.result);
+                System.out.println("(took " + executed.time + " ms)");
+                System.out.println();
+            }
+            line = input.nextLine();
+        }
         //System.out.println(getObjects(TipoEntidade.TEMA).toString());
         /*for (Statistics objeto : array_statistics){
             System.out.println(objeto);
         }*/
-        String s = "\"['The Chenille, Sisters', \"\"James Dapogny's Chicago Jazz Band\"\"]\"";
-        String s2 = "\"['Vanessa Bell Armstrong, Patti Austin, Bernie K.']\"";
-        String s3 = "\"['Johnny Pacheco', 'Pete \"\"El Conde\"\" Rodriguez']\"";
-        System.out.println(System.currentTimeMillis() - tempo1);
 
     }
 }

@@ -29,4 +29,54 @@ public class Functions {
         }
         return artists;
     }
+
+    public static QueryResult execute(String command) {
+        String[] elementos = command.split(" ");
+        switch (elementos[0]) {
+            case "COUNT_SONGS_YEAR" -> {
+                return null;
+            }
+            case "COUNT_DUPLICATE_SONGS_YEAR" -> {
+                return null;
+            }
+            case "GET_SONGS_BY_ARTIST" -> {
+                return null;
+            }
+            case "GET_MOST_DANCEABLE" -> {
+                return null;
+            }
+            case "GET_ARTISTS_ONE_SONG" -> {
+                return null;
+            }
+            case "GET_TOP_ARTISTS_WITH_SONGS_BETWEEN" -> {
+                return null;
+            }
+            case "MOST_FREQUENT_WORDS_IN_ARTIST_NAME" -> {
+                return null;
+            }
+            case "GET_UNIQUE_TAGS" -> {
+                return null;
+            }
+            case "GET_UNIQUE_TAGS_IN_BETWEEN_YEARS" -> {
+                return null;
+            }
+            case "GET_RISING_STARS" -> {
+                return null;
+            }
+            case "ADD_TAGS" -> {
+                return null;
+            }
+            case "REMOVE_TAGS" -> {
+                return null;
+            }
+            case "GET_ARTISTS_FOR_TAG" -> {
+                return null;
+            }
+            default -> {
+                return null;
+            }
+
+        }
+
+    }
 }
