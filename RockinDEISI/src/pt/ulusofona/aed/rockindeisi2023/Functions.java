@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Functions {
-    public static ArrayList<String> process_Artists(String artists_String) {
+    public static ArrayList<String> parseMultipleArtists(String artists_String) {
         /* Patter "monta" o padrão a pocurar com a sintaxe limitador(.*?)limitador
         Ou seja, tudo o que está dentro dos limitadores irá ser procurado
         Matcher faz a procura na string do padrão definido no Pattern

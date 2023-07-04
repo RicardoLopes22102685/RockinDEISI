@@ -12,8 +12,7 @@ public class Song {
     BigDecimal dance_rate;
     BigDecimal vivacity;
     BigDecimal mean_volume;
-
-    short num_Artists;
+    int num_Artists;
 
     public Song(String song_ID, String song_name, int song_year) {
         this.song_ID = song_ID;
@@ -21,7 +20,14 @@ public class Song {
         this.song_year = song_year;
     }
 
-    public Song() {
+    public Song(String song_ID, String duration, Short explicit, int popularity, BigDecimal dance_rate, BigDecimal vivacity, BigDecimal mean_volume) {
+        this.song_ID = song_ID;
+        this.duration = duration;
+        this.explicit = explicit;
+        this.popularity = popularity;
+        this.dance_rate = dance_rate;
+        this.vivacity = vivacity;
+        this.mean_volume = mean_volume;
     }
 
     @Override

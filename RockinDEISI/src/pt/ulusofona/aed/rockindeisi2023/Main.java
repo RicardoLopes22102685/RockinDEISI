@@ -14,6 +14,7 @@ public class Main {
     static HashMap<String, Song> songs_Map = new HashMap<>();
     static HashMap<String, Song> song_details_Map = new HashMap<>();
     static HashMap<String, Artist> artists_Map = new HashMap<>();
+    static HashMap<String, Artist> artist_Map = new HashMap<>();
 
     public enum TipoEntidade {
         TEMA, ARTISTA, INPUT_INVALIDO
@@ -27,8 +28,11 @@ public class Main {
             case ARTISTA -> {
                 return artists;
             }
-            default -> {
+            case INPUT_INVALIDO -> {
                 return array_statistics;
+            }
+            default -> {
+                return null;
             }
         }
     }
@@ -41,7 +45,6 @@ public class Main {
         songs_Map.clear();
         song_details_Map.clear();
         artists_Map.clear();
-        String artists = "";
         //Leitura ficheiro songs.txt
         File songs_File = new File(folder, "songs.txt");
         Scanner scanner;
@@ -56,7 +59,7 @@ public class Main {
             line_count++;
             String linha = scanner.nextLine();
             String[] song_elements = linha.split("@");
-            if (song_elements.length != 3) {
+            if (song_elements.length != 3 || songs_Map.containsKey(song_elements[0].trim())) {//Só pode haver uma música com o mesmo ID
                 if (primeira_linha_nok == -1) {
                     primeira_linha_nok = line_count;
                 }
@@ -66,13 +69,6 @@ public class Main {
             String song_ID = song_elements[0].trim();
             String song_name = song_elements[1].trim();
             int song_year = Integer.parseInt(song_elements[2].trim());
-            if (songs_Map.containsKey(song_ID)) {
-                if (primeira_linha_nok == -1) {
-                    primeira_linha_nok = line_count;
-                }
-                linhas_nok++;
-                continue;
-            }
             linhas_ok++;
             Song song = new Song(song_ID, song_name, song_year);
             songs_Map.put(song_ID, song);
@@ -123,36 +119,24 @@ public class Main {
             String minutes = duration_split[0];
             String seconds_String = duration_split[1];
             float seconds = Float.parseFloat(seconds_String) * 60 / 100;*/
-            duration_string = minutes + ":" + seconds; //Verificar se é necessário usar math para round up/down
+            if (seconds < 10) {
+                duration_string = minutes + ":0" + seconds;
+            } else {
+                duration_string = minutes + ":" + seconds;
+            }
+            //Verificar se é necessário usar math para round up/down
             short explicit = Short.parseShort(explicit_String);
             int popularity = Integer.parseInt(popularity_String);
             BigDecimal dance_rate = new BigDecimal(dance_rate_String);
             BigDecimal vivacity = new BigDecimal(vivacity_String);
             BigDecimal mean_volume = new BigDecimal(mean_volume_String);
-            Song song_to_add_Map = new Song();
-            song_to_add_Map.song_ID = song_ID;
-            song_to_add_Map.duration = duration_string;
-            song_to_add_Map.explicit = explicit;
-            song_to_add_Map.popularity = popularity;
-            song_to_add_Map.dance_rate = dance_rate;
-            song_to_add_Map.vivacity = vivacity;
-            song_to_add_Map.mean_volume = mean_volume;
-            song_details_Map.put(song_ID, song_to_add_Map);
+            Song song_retrieved = songs_Map.get(song_ID);
+            Song song_dtl_to_Map = new Song(song_ID, duration_string, explicit, popularity, dance_rate, vivacity, mean_volume);
+            song_dtl_to_Map.song_name = song_retrieved.song_name;
+            song_dtl_to_Map.song_year = song_retrieved.song_year;
+            songs_Map.replace(song_ID, song_dtl_to_Map);
         }
         array_statistics.add(1, new Statistics("song_details.txt", linhas_ok, linhas_nok, primeira_linha_nok));
-
-        for (Song song_to_modify : songs) {
-            if (!song_details_Map.containsKey(song_to_modify.song_ID)) {
-                continue;
-            }
-            Song details_to_add = song_details_Map.get(song_to_modify.song_ID);
-            song_to_modify.duration = details_to_add.duration;
-            song_to_modify.explicit = details_to_add.explicit;
-            song_to_modify.popularity = details_to_add.popularity;
-            song_to_modify.dance_rate = details_to_add.dance_rate;
-            song_to_modify.vivacity = details_to_add.vivacity;
-            song_to_modify.mean_volume = details_to_add.mean_volume;
-        }
 
         //Leitura ficheiro song_artists.txt
         File song_artists_File = new File(folder, "song_artists.txt");
@@ -167,43 +151,60 @@ public class Main {
             line_count++;
             String linha = scanner.nextLine();
             String[] song_elements = linha.split("@");
-            if (song_elements.length != 2) {
+            if (song_elements.length != 2 || !songs_Map.containsKey(song_elements[0].trim())) {
                 if (primeira_linha_nok == -1) {
                     primeira_linha_nok = line_count;
                 }
                 linhas_nok++;
                 continue;
-            }
-            String song_ID = song_elements[0];
-            artists = song_elements[1];
-
-            if (!songs_Map.containsKey(song_ID)) {
-                if (primeira_linha_nok == -1) {
-                    primeira_linha_nok = line_count;
+            } //Song é valida e existe
+            String song_ID = song_elements[0].trim();
+            ArrayList<String> line_artists = Functions.parseMultipleArtists(song_elements[1]);
+            int count = 0;
+            for (String artist_to_add : line_artists) {
+                Artist artist_temp = new Artist(artist_to_add, 1);
+                if (artist_Map.putIfAbsent(artist_to_add, artist_temp) == null) {
+                    artists.add(artist_temp);
+                } else {
+                    Artist artist_to_modify = artist_Map.get(artist_to_add);
+                    artist_to_modify.num_Musicas++;
+                    artist_Map.replace(artist_to_add, artist_to_modify);
                 }
-                linhas_nok++;
-                continue;
+                count++;
             }
-
-            //TODO Adicionar Artists em ArrayList através da separação da QueryArtists
-            //TODO Adicionar Artists ao HashMap
-            //TODO Alterar NumArtists em cada song com base em ID
-            /*Artist artist = new Artist(song_ID, artists, )
-            songs_Map.put(song_ID, song);
-            songs.add(song);*/
-
+            Song song_to_modify = songs_Map.get(song_ID);
+            song_to_modify.num_Artists = count;
+            songs_Map.replace(song_ID, song_to_modify);
             linhas_ok++;
         }
-        //int num_artistas =  Functions.process_Artists(artists).size();
         array_statistics.add(2, new Statistics("song_artists.txt", linhas_ok, linhas_nok, primeira_linha_nok));
-
+        songs.replaceAll(song -> songs_Map.get(song.song_ID));
+        for (Artist artist_to_modify : artists) {
+            artist_to_modify.num_Musicas = artist_Map.get(artist_to_modify.nome_artista).num_Musicas;
+        }
         return true;
     }
 
     public static void main(String[] args) {
+        long time_ini = System.currentTimeMillis();
         if (!loadFiles(new File("."))) {
             return;
         }
+        /*
+        System.out.println(songs_Map.get("5EMKS6mLi4JprJxy8IGdhT"));
+        for (Song song : songs) {
+            if (song.song_ID.equals("5EMKS6mLi4JprJxy8IGdhT")) {
+                System.out.println(song);
+            }
+        }
+        for (Artist artist : artists) {
+            if (artist.nome_artista.equals("Drake")) {
+                System.out.println(artist);
+            }
+        }
+        */
+        System.out.println(System.currentTimeMillis()-time_ini);
+        /*
         Scanner input = new Scanner((System.in));
         String line = input.nextLine();
         while (!line.equals("EXIT")) {
@@ -216,7 +217,7 @@ public class Main {
                 System.out.println();
             }
             line = input.nextLine();
-        }
+        }*/
         //System.out.println(getObjects(TipoEntidade.TEMA).toString());
         /*for (Statistics objeto : array_statistics){
             System.out.println(objeto);
