@@ -187,9 +187,8 @@ public class Main {
 
     public static void main(String[] args) {
         long time_ini = System.currentTimeMillis();
-        if (!loadFiles(new File("."))) {
-            return;
-        }
+        loadFiles(new File("."));
+
         /*
         System.out.println(songs_Map.get("5EMKS6mLi4JprJxy8IGdhT"));
         for (Song song : songs) {
