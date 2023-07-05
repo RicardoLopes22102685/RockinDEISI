@@ -12,8 +12,6 @@ public class Statistics {
         this.primeira_linha_nok = primeira_linha_nok;
     }
 
-    public Statistics() {
-    }
 
     @Override
     public String toString() {
