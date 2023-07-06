@@ -30,6 +30,20 @@ public class Functions {
         return artists;
     }
 
+    public static String process_duration(String duration) {
+        String result = "";
+        long duration_to_long = Long.parseLong(duration);
+        long total_seconds = duration_to_long / 1000;
+        long minutes = total_seconds / 60;
+        long seconds = total_seconds % 60;
+        if (seconds < 10) {
+            result = minutes + ":0" + seconds;
+        } else {
+            result = minutes + ":" + seconds;
+        }
+        return result;
+    }
+
     public static QueryResult execute(String command) {
         String[] elementos = command.split(" ");
         switch (elementos[0]) {

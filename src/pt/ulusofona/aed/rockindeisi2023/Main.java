@@ -110,20 +110,7 @@ public class Main {
                 continue;
             }
             linhas_ok++;
-            long duration_parse = Long.parseLong(duration_string);
-            //float time_minutes = (float) duration_parse / (1000 * 60);
-            long total_seconds = duration_parse / 1000;
-            long minutes = total_seconds / 60;
-            long seconds = total_seconds % 60;
-            /*String[] duration_split = Float.toString(time_minutes).split("\\.");
-            String minutes = duration_split[0];
-            String seconds_String = duration_split[1];
-            float seconds = Float.parseFloat(seconds_String) * 60 / 100;*/
-            if (seconds < 10) {
-                duration_string = minutes + ":0" + seconds;
-            } else {
-                duration_string = minutes + ":" + seconds;
-            }
+            duration_string = Functions.process_duration(duration_string);
             //Verificar se é necessário usar math para round up/down
             short explicit = Short.parseShort(explicit_String);
             int popularity = Integer.parseInt(popularity_String);
@@ -187,26 +174,26 @@ public class Main {
 
     public static void main(String[] args) {
         long time_ini = System.currentTimeMillis();
-        loadFiles(new File("."));
-
+        if (!loadFiles(new File("."))) {
+            return;
+        }
         /*
-        System.out.println(songs_Map.get("5EMKS6mLi4JprJxy8IGdhT"));
+        System.out.println(songs_Map.get("7GIMqa2FksLo2EXNacnIlJ"));
         for (Song song : songs) {
-            if (song.song_ID.equals("5EMKS6mLi4JprJxy8IGdhT")) {
+            if (song.song_ID.equals("7GIMqa2FksLo2EXNacnIlJ")) {
                 System.out.println(song);
             }
-        }
+        } /*
         for (Artist artist : artists) {
             if (artist.nome_artista.equals("Drake")) {
                 System.out.println(artist);
             }
         }
-        */
-        System.out.println(System.currentTimeMillis()-time_ini);
-        /*
+        System.out.println(System.currentTimeMillis()-time_ini);*/
+
         Scanner input = new Scanner((System.in));
         String line = input.nextLine();
-        while (!line.equals("EXIT")) {
+        while (line != null && !line.equals("EXIT")) {
             QueryResult executed = Functions.execute(line);
             if (executed == null) {
                 System.out.println("Illegal command. Try again");
@@ -216,11 +203,7 @@ public class Main {
                 System.out.println();
             }
             line = input.nextLine();
-        }*/
-        //System.out.println(getObjects(TipoEntidade.TEMA).toString());
-        /*for (Statistics objeto : array_statistics){
-            System.out.println(objeto);
-        }*/
+        }
 
     }
 }

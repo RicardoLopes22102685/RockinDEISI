@@ -30,4 +30,11 @@ public class TestMain {
         song.num_Artists = 10;
         Assertions.assertEquals(song.toString(), "3xpkvm9sTBtUhhlX2d8eAk | A Thousand Years (Tribute Twilight) | 2013 | 4:40 | 3 | 10", "Função toString() para musicas superiores a 2000 não funciona corretamente");
     }
+    @Test
+    public void to_String_Artist(){
+        Artist artist1 = new Artist("Drake", 15);
+        Artist artist2 = new Artist("George Jones", 3);
+        Assertions.assertEquals(artist1.toString(), "Artista: [\"Drake\"]", "Função toString() de Artists com iniciais ABCD não funciona corretamente");
+        Assertions.assertEquals(artist2.toString(), "Artista: [George Jones] | 3", "Função toString() de Artists não funciona corretamente");
+    }
 }
