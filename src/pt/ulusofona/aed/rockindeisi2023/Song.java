@@ -3,40 +3,40 @@ package pt.ulusofona.aed.rockindeisi2023;
 import java.math.BigDecimal;
 
 public class Song {
-    String song_ID;
-    String song_name;
-    int song_year;
+    String songID;
+    String songName;
+    int songYear;
     String duration;
     Short explicit;
     int popularity;
-    BigDecimal dance_rate;
+    BigDecimal danceRate;
     BigDecimal vivacity;
-    BigDecimal mean_volume;
-    int num_Artists;
+    BigDecimal meanVolume;
+    int numArtists;
 
-    public Song(String song_ID, String song_name, int song_year) {
-        this.song_ID = song_ID;
-        this.song_name = song_name;
-        this.song_year = song_year;
+    public Song(String songID, String songName, int songYear) {
+        this.songID = songID;
+        this.songName = songName;
+        this.songYear = songYear;
     }
 
-    public Song(String song_ID, String duration, Short explicit, int popularity, BigDecimal dance_rate, BigDecimal vivacity, BigDecimal mean_volume) {
-        this.song_ID = song_ID;
+    public Song(String songID, String duration, Short explicit, int popularity, BigDecimal danceRate, BigDecimal vivacity, BigDecimal meanVolume) {
+        this.songID = songID;
         this.duration = duration;
         this.explicit = explicit;
         this.popularity = popularity;
-        this.dance_rate = dance_rate;
+        this.danceRate = danceRate;
         this.vivacity = vivacity;
-        this.mean_volume = mean_volume;
+        this.meanVolume = meanVolume;
     }
 
     @Override
     public String toString() {
-        if (song_year < 1995) {
-            return song_ID + " | " + song_name + " | " + song_year;
-        } else if (song_year < 2000) { //ATENÇÃO é implicito que song_year >=1995 neste ponto
-            return song_ID + " | " + song_name + " | " + song_year + " | " + duration + " | " + popularity;
+        if (songYear < 1995) {
+            return songID + " | " + songName + " | " + songYear;
+        } else if (songYear < 2000) { //ATENÇÃO é implicito que song_year >=1995 neste ponto
+            return songID + " | " + songName + " | " + songYear + " | " + duration + " | " + popularity;
         }
-        return song_ID + " | " + song_name + " | " + song_year + " | " + duration + " | " + popularity +  " | " + num_Artists;
+        return songID + " | " + songName + " | " + songYear + " | " + duration + " | " + popularity +  " | " + numArtists;
     }
 }

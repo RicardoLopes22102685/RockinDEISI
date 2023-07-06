@@ -1,20 +1,20 @@
 package pt.ulusofona.aed.rockindeisi2023;
 
 public class Artist {
-    String nome_artista;
-    int num_Musicas;
+    String nomeArtista;
+    int numMusicas;
 
-    public Artist(String nome_artista, int numMusicas) {
-        this.nome_artista = nome_artista;
-        this.num_Musicas = numMusicas;
+    public Artist(String nomeArtista, int numMusicas) {
+        this.nomeArtista = nomeArtista;
+        this.numMusicas = numMusicas;
     }
 
     @Override
     public String toString() {
-        if (nome_artista.startsWith("A") || nome_artista.startsWith("B") || nome_artista.startsWith("C") || nome_artista.startsWith("D")) {
-            return String.format("Artista: [\"%s\"]",nome_artista);
+        if (nomeArtista.startsWith("A") || nomeArtista.startsWith("B") || nomeArtista.startsWith("C") || nomeArtista.startsWith("D")) {
+            return String.format("Artista: [\"%s\"]", nomeArtista);
         } else {
-            return String.format("Artista: [%s] | %d", nome_artista, num_Musicas);
+            return String.format("Artista: [%s] | %d", nomeArtista, numMusicas);
         }
     }
 }
