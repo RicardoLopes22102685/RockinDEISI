@@ -1,12 +1,6 @@
 package pt.ulusofona.aed.rockindeisi2023;
 
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class Functions {
-
-
     public static String process_duration(String duration) {
         String result = "";
         long duration_to_long = Long.parseLong(duration);

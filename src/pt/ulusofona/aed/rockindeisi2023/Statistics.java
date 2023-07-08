@@ -11,8 +11,6 @@ public class Statistics {
         this.linhasNok = linhasNok;
         this.primeiraLinhaNok = primeiraLinhaNok;
     }
-
-
     @Override
     public String toString() {
         return nomeFicheiro + " | " + linhasOk + " | "+ linhasNok + " | " + primeiraLinhaNok;
